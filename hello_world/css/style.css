@@ -1,0 +1,35 @@
+.header {
+    color: black;
+    font-family:'Courier New', Courier, monospace
+}
+
+.content {
+    color: black;
+    font-size: 38px;
+    background-color: grey;
+}
+
+.content:hover {
+    color: white;
+    background-color: black;
+}
+
+.bdr {
+    border: 5px black solid;
+}
+
+a:link {
+    color: black;
+}
+
+a:visited {
+    color: black;
+}
+
+a:hover {
+    color:darkgrey;
+}
+
+a:active {
+    color: white;
+}
