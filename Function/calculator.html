@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Calculator</title>
+    <style>
+        body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:24px}
+        .calc{width:220px}
+        .display{width:100%;height:48px;font-size:20px;padding:6px;box-sizing:border-box;text-align:right}
+        .keys{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+        button{padding:14px;font-size:16px}
+        
+        .wide{grid-column:span 2}
+    </style>
+</head>
+<body>
+    <div class="calc">
+        <input id="display" class="display" type="text" value="0" readonly />
+        <div class="keys">
+            <button id="clear">C</button>
+            <button id="plusMinus">±</button>
+            <button id="percent">%</button>
+            <button class="op" data-op="/">÷</button>
+
+            <button data-num="7">7</button>
+            <button data-num="8">8</button>
+            <button data-num="9">9</button>
+            <button class="op" data-op="*">×</button>
+
+            <button data-num="4">4</button>
+            <button data-num="5">5</button>
+            <button data-num="6">6</button>
+            <button class="op" data-op="-">−</button>
+
+            <button data-num="1">1</button>
+            <button data-num="2">2</button>
+            <button data-num="3">3</button>
+            <button class="op" data-op="+">+</button>
+
+            <button class="wide" data-num="0">0</button>
+            <button data-num=".">.</button>
+            <button id="equals" class="op">=</button>
+        </div>
+    </div>
+
+    <script src="./function.js"></script>
+    <script>
+       
+        (function(){
+            const d = document.getElementById('display');
+            let current = '0';
+            let operator = null;
+            let previous = null;
+
+            function update() { d.value = current; }
+
+            document.querySelectorAll('button[data-num]').forEach(b=>b.addEventListener('click',()=>{
+                const v = b.getAttribute('data-num');
+                if (v === '.' && current.includes('.')) return;
+                if (current === '0' && v !== '.') current = v;
+                else current = current + v;
+                update();
+            }));
+
+            document.querySelectorAll('button[data-op]').forEach(b=>b.addEventListener('click',()=>{
+                const op = b.getAttribute('data-op');
+                if (op){
+                    if (previous !== null && operator){
+                        previous = window.calculate(+previous, +current, operator);
+                        current = String(previous);
+                    } else {
+                        previous = current;
+                    }
+                    operator = op;
+                    current = '0';
+                    update();
+                }
+            }));
+
+            document.getElementById('equals').addEventListener('click',()=>{
+                if (operator && previous !== null){
+                    const result = window.calculate(+previous, +current, operator);
+                    current = String(result);
+                    operator = null;
+                    previous = null;
+                    update();
+                }
+            });
+
+            document.getElementById('clear').addEventListener('click',()=>{ current='0'; operator=null; previous=null; update(); });
+            document.getElementById('percent').addEventListener('click',()=>{ current = String(parseFloat(current)/100); update(); });
+            document.getElementById('plusMinus').addEventListener('click',()=>{ current = String(-parseFloat(current)); update(); });
+        })();
+    </script>
+</body>
+</html>
